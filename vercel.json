@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    { 
+      "source": "/discord",
+      "destination": "https://discord.com/invite/BUCup66VKc", 
+      "permanent": true
+    }
+  ]
+}

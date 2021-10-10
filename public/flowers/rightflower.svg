@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg fill="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<filter id="c" x="-50%" y="-50%" width="200%" height="200%">
+<feTurbulence baseFrequency="0.002"/>
+<feDisplacementMap in="SourceGraphic" scale="182.68344468874196"/>
+<feOffset dx="-30" dy="-10"/>
+<feDropShadow dx="8" dy="8" flood-color="#000000" stdDeviation="0"/>
+</filter>
+</defs>
+<rect x="-50%" y="-50%" width="200%" height="200%" fill="#EF3E4A"/>
+<rect width="500" height="500" fill="#FEDCCC" opacity=".2" style="mix-blend-mode:overlay"/>
+<g filter="url(#c)" stroke="#000" stroke-width="4">
+<defs>
+<path id="a" d="m244.62 172.51c0.296-1.38 2.475-2.506 5.098-2.506 2.624 0 4.804 1.126 5.109 2.504 0.781 3.541 3.27 10.605 11.188 19.716 7.845 9.027 10.946 19.298 4.53 28.636l-13.154 19.144h-14.615l-13.317-19.381c-6.324-9.205-3.412-19.332 4.171-28.266 7.786-9.174 10.226-16.29 10.99-19.847z"/>
+<mask id="b">
+<rect width="100%" height="100%" fill="#fff"/>
+<use transform="rotate(27.692 250 250)" fill="black" xlink:href="#a"/>
+</mask>
+</defs>
+<use transform="rotate(0 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(27.692 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(55.385 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(83.077 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(110.77 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(138.46 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(166.15 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(193.85 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(221.54 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(249.23 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(-83.077 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(-55.385 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(-27.692 250 250)" fill="#EBB9D4" mask="url(#b)" xlink:href="#a"/>
+<circle cx="250" cy="250" r="25" fill="#FF89B5"/>
+</g>
+</svg>

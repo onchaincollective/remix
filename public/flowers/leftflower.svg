@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg fill="none" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<filter id="c" x="-50%" y="-50%" width="200%" height="200%">
+<feDropShadow dx="8" dy="8" flood-color="#000000" stdDeviation="0"/>
+</filter>
+</defs>
+<rect x="-50%" y="-50%" width="200%" height="200%" fill="#B3E0E0"/>
+<rect width="500" height="500" fill="#FEDCCC" opacity=".2" style="mix-blend-mode:overlay"/>
+<g filter="url(#c)" stroke="#000" stroke-width="4">
+<defs>
+<path id="a" d="m218.62 207.24c-4.574-9.147-0.079-25.232 9.574-33.61 12.619-10.953 30.99-10.953 43.61 0 9.652 8.378 14.147 24.463 9.574 33.61l-25.379 32.758h-12l-25.379-32.758z"/>
+<mask id="b">
+<rect width="100%" height="100%" fill="#fff"/>
+<use transform="rotate(45 250 250)" fill="black" xlink:href="#a"/>
+</mask>
+</defs>
+<use transform="rotate(0 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(45 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(90 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(135 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(180 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(225 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(270 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<use transform="rotate(315 250 250)" fill="#EEE9DC" mask="url(#b)" xlink:href="#a"/>
+<circle cx="250" cy="250" r="30" fill="#FDB90B"/>
+</g>
+</svg>
