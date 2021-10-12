@@ -147,13 +147,24 @@ function Home() {
     setNftImages(nftFlwrs, false);
   }
 
+  // Method to reset to first step
+  function goToBaseStep() {
+    setBgImage(true);
+    setNftRenders(null);
+    setNftImages(nftWithoutFlwrs, true);
+    canvas.clear();
+  }
+
   // Method to return relevant copy in respective steps
   function getSupportingCopy() {
     if (!active) {
       return "Flaunt your flowers by remixing with jpegs you own. Connect your wallet to get started"
     }
+    if (active && working) {
+      return "Loading your nfts"
+    }
     if (active && !working && bgImage) {
-      return "Choose your base jpeg and hit next to proceed"
+      return "Choose your base jpeg"
     }
     if (active && !bgImage) {
       return "Now add all the flowers you want to your pfp"
@@ -249,14 +260,31 @@ function Home() {
             <link rel="manifest" href="/manifest.webmanifest" />
         </Head>
       
-        <div className="flex items-center flex-col max-w-2xl mx-auto text-center p-4">
+        <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
           <div className="flex flex-col items-center">
               <header className="text-5xl md:text-6xl font-snell flex items-center justify-center">
-                <img src="/remix/logo.png" className="w-3/5"/>
+                <img src="/remix/logo.png" className="w-2/5"/>
               </header>
-              <p className="text-center max-w-xl mx-auto text-2xl text-left -mt-16 md:p-4 p-6">
-                {getSupportingCopy()}
-              </p>
+          </div>
+          <div className="flex flex-row space-between items-center align-center -mt-8 w-full">
+            {active && !working &&
+              <div className="flex flex-row justify-center space-x-8">
+                <div className="ghost-button back-button" onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
+              </div>
+            }
+            <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
+              {getSupportingCopy()}
+            </p>
+            {active && !working &&
+              <div className="flex flex-row justify-center space-x-8">
+                {bgImage ?
+                  <button className="ghost-button disabled:opacity-50 disabled:cursor-not-allowed" 
+                    onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
+                  :
+                  <div className="button" onClick={() => downloadPFP()}>download jpeg</div>
+                }
+              </div>
+            } 
           </div>
           {!active && (
             <>
@@ -269,14 +297,9 @@ function Home() {
               </div>
             </>
           )}
-          {active && working && (
-              <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
-                  Loading your nfts
-              </div>
-          )}
         </div>
         {active && !working && (nftRenders && nftRenders.length > 0 ? (
-          <div className="flex flex-col mx-auto items-center text-center mt-6 mb-12 max-w-5xl">
+          <div className="flex flex-col mx-auto items-center text-center mt-12 mb-12 max-w-5xl">
             <div className="flex flex-row space-x-8">
               <div>
                 <img id="output" crossOrigin="anonymous" className="hidden"/>
@@ -289,14 +312,7 @@ function Home() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-row justify-center space-x-8">
-              {bgImage ?
-                <button className="button cursor-pointer py-3 mt-8 disabled:opacity-50 disabled:cursor-not-allowed" 
-                  onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
-                :
-                <div className="button cursor-pointer py-3 mt-8" onClick={() => downloadPFP()}>download jpeg</div>
-               }
-            </div>
+
           </div>
           ) : (
             <div className="flex flex-col mx-auto items-center text-center mt-6 mb-12 max-w-5xl">
@@ -308,19 +324,19 @@ function Home() {
           )
         )}
         <div className="flex align-center flex-col max-w-2xl mx-auto text-center mt-8 mb-8 p-4">
-            <div className="text-md ">
-              <a href="https://occ.xyz/flowers" target="_blank" className="hover:underline">
-                  flowers
-              </a>
-              {" "}&bull;{" "}
-              <a href="https://twitter.com/OnChainCo" target="_blank" className="hover:underline">
-                  twitter
-              </a>
-              {" "}&bull;{" "}
-              <a href="https://discord.com/invite/BUCup66VKc" target="_blank" className="hover:underline">
-                  discord
-              </a>
-            </div>
+          <div className="text-md ">
+            <a href="https://occ.xyz/flowers" target="_blank" className="hover:underline">
+              flowers
+            </a>
+            {" "}&bull;{" "}
+            <a href="https://twitter.com/OnChainCo" target="_blank" className="hover:underline">
+              twitter
+            </a>
+            {" "}&bull;{" "}
+            <a href="https://discord.com/invite/BUCup66VKc" target="_blank" className="hover:underline">
+              discord
+            </a>
+          </div>
         </div>
     </main>
   );
