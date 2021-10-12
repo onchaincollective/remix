@@ -39,6 +39,7 @@ function Home() {
   const [nftWithoutFlwrs, setNftWithoutFlwrs] = useState(null);
   const [nftFlwrs, setNftFlwrs] = useState(null);
   const [nftRenders, setNftRenders] = useState(null);
+  const [emptyState, setEmptyState] = useState(true);
 
   useEventListener('keydown', handler);
   
@@ -77,8 +78,10 @@ function Home() {
   }, [account]);
 
   useEffect(() => {
-    console.log(bgImageSelected);
-  }, [bgImageSelected])
+    if (nftRenders && nftRenders.length > 0) {
+      setEmptyState(false);
+    }
+  }, [nftRenders])
 
     // Method to set URLs for nfts in selection view
   function setNftImages(nftArray, bgImage) {
@@ -144,6 +147,7 @@ function Home() {
     console.log('refreshing nfts');
     setBgImage(false);
     setNftRenders(null);
+    // setNftImages([], false);
     setNftImages(nftFlwrs, false);
   }
 
@@ -153,22 +157,6 @@ function Home() {
     setNftRenders(null);
     setNftImages(nftWithoutFlwrs, true);
     canvas.clear();
-  }
-
-  // Method to return relevant copy in respective steps
-  function getSupportingCopy() {
-    if (!active) {
-      return "Flaunt your flowers by remixing with jpegs you own. Connect your wallet to get started"
-    }
-    if (active && working) {
-      return "Loading your nfts"
-    }
-    if (active && !working && bgImage) {
-      return "Choose your base jpeg"
-    }
-    if (active && !bgImage) {
-      return "Now add all the flowers you want to your pfp"
-    }
   }
 
   /* Method to load the selected image onto the canvas
@@ -261,44 +249,63 @@ function Home() {
         </Head>
       
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
-          <div className="flex flex-col items-center">
-              <header className="text-5xl md:text-6xl font-snell flex items-center justify-center">
-                <img src="/remix/logo.png" className="w-2/5"/>
-              </header>
-          </div>
+          <header className="text-5xl md:text-6xl font-snell flex items-center justify-center mt-8">
+            <img src="/remix/logo.png" className="w-2/6"/>
+          </header>
           <div className="flex flex-row space-between items-center align-center -mt-8 w-full">
-            {active && !working &&
-              <div className="flex flex-row justify-center space-x-8">
-                <div className="ghost-button back-button" onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
+           {!active &&
+              <div className="flex flex-col max-w-xl mx-auto">
+                <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
+                  Flaunt your flowers by remixing with jpegs you own. Connect your wallet to get started
+                </p>
+                <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
+                    <ConnectButtons setWorking={setWorking} activate={activate} />
+                </div>
+                <div className="flex flex-row space-x-8 mt-8 items-center justify-center">
+                  <img src="/remix/pfpflip.gif" className="rounded-xl w-96"/>
+                  <img src="/remix/flowerflip.gif" className="rounded-xl w-96"/>
+                </div>
               </div>
             }
-            <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
-              {getSupportingCopy()}
-            </p>
-            {active && !working &&
-              <div className="flex flex-row justify-center space-x-8">
-                {bgImage ?
-                  <button className="ghost-button disabled:opacity-50 disabled:cursor-not-allowed" 
-                    onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
+            {active && working &&
+              <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
+                Loading your jpegs
+              </p>
+            }
+            {active && !working && 
+              <>
+                {nftRenders && nftRenders.length > 0 ?
+                  <>
+                    <div className="flex flex-row justify-center space-x-8">
+                      <div className="ghost-button back-button" onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
+                    </div>
+                    <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
+                      {bgImage ? "Choose your base jpeg" : "Now add all the flowers you want to your pfp"}
+                    </p>
+                    {bgImage ?
+                      <button className="ghost-button disabled:opacity-50 disabled:cursor-not-allowed" 
+                        onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
+                      :
+                      <div className="button" onClick={() => downloadPFP()}>download jpeg</div>
+                    }
+                  </>
                   :
-                  <div className="button" onClick={() => downloadPFP()}>download jpeg</div>
+                  <div className="flex flex-col max-w-xl mx-auto text-2xl text-left md:p-4 p-6">
+                    <p className="text-center">
+                      Looks like you don't have any jpegs in your wallet.
+                      You can buy some now on <a href="https://opensea.io" target="_blank" className="hover:underline italic">opensea</a>
+                    </p>
+                    <div className="flex flex-row space-x-8 mt-8 items-center justify-center">
+                      <img src="/remix/pfpflip.gif" className="rounded-xl w-96"/>
+                      <img src="/remix/flowerflip.gif" className="rounded-xl w-96"/>
+                    </div>
+                  </div>
                 }
-              </div>
-            } 
+              </>
+            }
           </div>
-          {!active && (
-            <>
-              <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
-                  <ConnectButtons setWorking={setWorking} activate={activate} />
-              </div>
-              <div className="flex flex-row space-x-8 mt-8 items-center justify-center">
-                <img src="/remix/pfpflip.gif" className="rounded-xl w-96"/>
-                <img src="/remix/flowerflip.gif" className="rounded-xl w-96"/>
-              </div>
-            </>
-          )}
         </div>
-        {active && !working && (nftRenders && nftRenders.length > 0 ? (
+        {active && !working && (nftRenders && nftRenders.length > 0 &&
           <div className="flex flex-col mx-auto items-center text-center mt-12 mb-12 max-w-5xl">
             <div className="flex flex-row space-x-8">
               <div>
@@ -314,14 +321,6 @@ function Home() {
             </div>
 
           </div>
-          ) : (
-            <div className="flex flex-col mx-auto items-center text-center mt-6 mb-12 max-w-5xl">
-              <p className="p-16">
-                Looks like you don't have any jpegs in your wallet.
-                You can buy some now on <a href="https://opensea.io" target="_blank" className="hover:underline italic">opensea</a>
-              </p>
-            </div>
-          )
         )}
         <div className="flex align-center flex-col max-w-2xl mx-auto text-center mt-8 mb-8 p-4">
           <div className="text-md ">
