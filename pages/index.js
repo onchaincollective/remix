@@ -267,6 +267,20 @@ function Home() {
             <link rel="icon" href="/remix/icon.png" type="image/png" />
             <link rel="apple-touch-icon" href="/remix/apple-touch-icon.png" />
             <link rel="manifest" href="/manifest.webmanifest" />
+            {/* Global Site Tag (gtag.js) - Google Analytics */}
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-0QRHNTF9FY"></script>
+            <script
+                dangerouslySetInnerHTML={{
+                __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-0QRHNTF9FY', {
+                page_path: window.location.pathname,
+                });
+            `,
+                }}
+            />
         </Head>
       
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
