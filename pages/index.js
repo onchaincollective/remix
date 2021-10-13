@@ -36,8 +36,8 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [bgImage, setBgImage] = useState(true);
   const [bgImageSelected, setBgImageSelected] = useState(false);
-  const [nftWithoutFlwrs, setNftWithoutFlwrs] = useState(null);
-  const [nftFlwrs, setNftFlwrs] = useState(null);
+  const [nftWithoutFlwrs, setNftWithoutFlwrs] = useState([]);
+  const [nftFlwrs, setNftFlwrs] = useState([]);
   const [nftRenders, setNftRenders] = useState(null);
   const [emptyState, setEmptyState] = useState(true);
 
@@ -64,8 +64,8 @@ function Home() {
         });
         setNftWithoutFlwrs(nftArrayWithoutFlwrs);
         setNftFlwrs(nftArrayFlwrs);
-
         setWorking(false);
+
         // Initiating fabric canvas
         setNftImages(nftArrayWithoutFlwrs, true);
         canvas = new fabric.Canvas("c");
@@ -108,13 +108,13 @@ function Home() {
   function deleteSelectedObjectsFromCanvas(){
     var selection = canvas.getActiveObject();
     if (selection.type === 'activeSelection') {
-        selection.forEachObject(function(element) {
-            console.log(element);
-            canvas.remove(element);
-        });
+      selection.forEachObject(function(element) {
+        console.log(element);
+        canvas.remove(element);
+      });
     }
     else{
-        canvas.remove(selection);
+      canvas.remove(selection);
     }
     canvas.discardActiveObject();
     canvas.requestRenderAll();
@@ -138,7 +138,7 @@ function Home() {
   function downloadPFP() {
     canvas.discardActiveObject().renderAll();
     canvas.getElement().toBlob(function(blob) {
-      saveAs(blob, "pfp.png");
+      saveAs(blob, "occ_flowers_remix.png");
     });
   }
 
@@ -154,6 +154,7 @@ function Home() {
   // Method to reset to first step
   function goToBaseStep() {
     setBgImage(true);
+    setBgImageSelected(false);
     setNftRenders(null);
     setNftImages(nftWithoutFlwrs, true);
     canvas.clear();
@@ -164,13 +165,13 @@ function Home() {
   ** bgImage: boolean to set the image as base layer (first layer)
   **/
   function loadFile(url, bgImage) {
-    var output = document.getElementById("output");
+    let output = document.getElementById("output");
     output.src = url;
 
     if (bgImage) {
       console.log('setting bgimg');
       fabric.Image.fromURL(output.src, function(img) {
-        var img3 = img.set({left: 0,top: 0 })
+        let img3 = img.set({left: 0,top: 0 })
         img3.scaleToWidth(500);
         canvas.setDimensions({width: 500, height: img3.getScaledHeight()});
         canvas.setBackgroundImage(img3);
@@ -180,7 +181,7 @@ function Home() {
     } else {
       console.log('adding flowers');
       getFileFromUrl(url, 'nft.jpg').then((file) => {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = function (evt) {
           let parser = new DOMParser();
@@ -189,7 +190,7 @@ function Home() {
             xmlDoc.getElementsByTagName("svg")[0].setAttribute('width', 500);
             xmlDoc.getElementsByTagName("svg")[0].setAttribute('viewBox', "100 100 300 300");
             
-            var y1 = xmlDoc.getElementsByTagName("rect")[0];
+            let y1 = xmlDoc.getElementsByTagName("rect")[0];
 
             if (y1.getAttribute('filter') == "url(#filterBG)") {
               let bg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" height="500" width="500">'
@@ -199,19 +200,19 @@ function Home() {
               bg = parser.parseFromString(bg, "text/xml");
       
               fabric.Image.fromURL("data:image/svg+xml;base64," + base64(bg), function(img) {
-                var img3 = img.set({left: 0,top: 0, lockMovementX: true, lockMovementY: true, selectable: false, opacity: 0.5, mode: 'overlay'  })
+                let img3 = img.set({left: 0,top: 0, lockMovementX: true, lockMovementY: true, selectable: false, opacity: 0.5, mode: 'overlay'  })
                 img3.scaleToWidth(500);
                 canvas.add(img3);
                 canvas.renderAll();
               }, { crossOrigin: 'Anonymous' });
             }
-            var y2 = xmlDoc.getElementsByTagName("rect")[1];
+            let y2 = xmlDoc.getElementsByTagName("rect")[1];
             xmlDoc.documentElement.removeChild(y1);
             xmlDoc.documentElement.removeChild(y2);
           }
 
           fabric.Image.fromURL("data:image/svg+xml;base64," + base64(xmlDoc), function(img) {
-            var img3 = img.set({left: 100,top: 100})
+            let img3 = img.set({left: 100,top: 100})
             img3.scaleToWidth(300);
             canvas.add(img3);
             canvas.renderAll();
@@ -249,7 +250,7 @@ function Home() {
         </Head>
       
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
-          <header className="text-5xl md:text-6xl font-snell flex items-center justify-center mt-8">
+          <header className="text-5xl md:text-6xl font-snell flex items-center justify-center mt-6">
             <img src="/remix/logo.png" className="w-2/6"/>
           </header>
           <div className="flex flex-row space-between items-center align-center -mt-8 w-full">
@@ -268,17 +269,15 @@ function Home() {
               </div>
             }
             {active && working &&
-              <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
+              <p className="text-center max-w-xl mx-auto text-2xl text-left md:p-4 p-6 mb-24">
                 Loading your jpegs
               </p>
             }
-            {active && !working && 
+            {active && !working &&
               <>
-                {nftRenders && nftRenders.length > 0 ?
+                {nftWithoutFlwrs.length > 0 ?
                   <>
-                    <div className="flex flex-row justify-center space-x-8">
-                      <div className="ghost-button back-button" onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
-                    </div>
+                    <div className="ghost-button back-button" onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
                     <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
                       {bgImage ? "Choose your base jpeg" : "Now add all the flowers you want to your pfp"}
                     </p>
@@ -286,14 +285,22 @@ function Home() {
                       <button className="ghost-button disabled:opacity-50 disabled:cursor-not-allowed" 
                         onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
                       :
-                      <div className="button" onClick={() => downloadPFP()}>download jpeg</div>
+                      <div className={nftFlwrs.length > 0 ? "button" : "ghost-button"} onClick={() => downloadPFP()}>download jpeg</div>
                     }
                   </>
                   :
                   <div className="flex flex-col max-w-xl mx-auto text-2xl text-left md:p-4 p-6">
                     <p className="text-center">
-                      Looks like you don't have any jpegs in your wallet.
-                      You can buy some now on <a href="https://opensea.io" target="_blank" className="hover:underline italic">opensea</a>
+                      {nftFlwrs.length > 0 ?
+                        <span>
+                          Looks like you don't have any jpegs other than flowers in your wallet to remix.
+                          Get some now on <a href="https://opensea.io" target="_blank" className="hover:underline italic">opensea</a>
+                        </span> :
+                        <span>
+                          Looks like you don't have any jpegs in your wallet.
+                          Get some now on <a href="https://opensea.io" target="_blank" className="hover:underline italic">opensea</a>
+                        </span>
+                      }
                     </p>
                     <div className="flex flex-row space-x-8 mt-8 items-center justify-center">
                       <img src="/remix/pfpflip.gif" className="rounded-xl w-96"/>
@@ -305,23 +312,29 @@ function Home() {
             }
           </div>
         </div>
-        {active && !working && (nftRenders && nftRenders.length > 0 &&
-          <div className="flex flex-col mx-auto items-center text-center mt-12 mb-12 max-w-5xl">
-            <div className="flex flex-row space-x-8">
-              <div>
-                <img id="output" crossOrigin="anonymous" className="hidden"/>
-                <canvas id="c" width="500" height="500" crossOrigin="anonymous"></canvas>
-                <div id="svg-tag" crossOrigin="anonymous"></div>
-              </div>
-              <div className="felx flex-col items-center w-full h-full justify-center">
-                <div className="grid grid-cols-4 gap-4 nfts"> 
-                  {nftRenders}
-                </div>
-              </div>
+        {active && !working && nftWithoutFlwrs.length > 0&& 
+          <div className="flex flex-row space-x-8 mx-auto items-center text-center mt-12 mb-12 max-w-5xl">
+            <div>
+              <img id="output" crossOrigin="anonymous" className="hidden"/>
+              <canvas id="c" width="500" height="500" crossOrigin="anonymous"></canvas>
+              <div id="svg-tag" crossOrigin="anonymous"></div>
             </div>
-
+            <div className="felx flex-col items-center w-full h-full justify-center">
+              {nftRenders && nftRenders.length > 0 ?
+              <div className="grid grid-cols-4 gap-4 nfts"> 
+                {nftRenders}
+              </div>
+              :
+              <div className="flex items-center flex-col justify-center p-16">
+                <p className="text-lg">
+                🥀 No flowers found in your wallet 🥀
+                </p>
+                <a href="https://opensea.io/collection/flowersonchain" target="_blank" className="ghost-button mt-8">get from opensea</a>
+              </div>
+              }
+            </div>
           </div>
-        )}
+        }
         <div className="flex align-center flex-col max-w-2xl mx-auto text-center mt-8 mb-8 p-4">
           <div className="text-md ">
             <a href="https://occ.xyz/flowers" target="_blank" className="hover:underline">
