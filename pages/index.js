@@ -208,6 +208,7 @@ function Home() {
           let xmlDoc = parser.parseFromString(evt.target.result, "text/xml");
           if (xmlDoc.getElementsByTagName("svg").length > 0) {
             xmlDoc.getElementsByTagName("svg")[0].setAttribute('width', 500);
+            xmlDoc.getElementsByTagName("svg")[0].setAttribute('height', 500);
             xmlDoc.getElementsByTagName("svg")[0].setAttribute('viewBox', "100 100 300 300");
             
             let y1 = xmlDoc.getElementsByTagName("rect")[0];
@@ -229,14 +230,14 @@ function Home() {
             let y2 = xmlDoc.getElementsByTagName("rect")[1];
             xmlDoc.documentElement.removeChild(y1);
             xmlDoc.documentElement.removeChild(y2);
-          }
 
-          fabric.Image.fromURL("data:image/svg+xml;base64," + base64(xmlDoc), function(img) {
-            let img3 = img.set({left: 100,top: 100})
-            img3.scaleToWidth(300);
-            canvas.add(img3);
-            canvas.renderAll();
-          },{ crossOrigin: 'Anonymous' });
+            fabric.Image.fromURL("data:image/svg+xml;base64," + base64(xmlDoc), function(img) {
+              let img3 = img.set({left: 100,top: 100})
+              img3.scaleToWidth(300);
+              canvas.add(img3);
+              canvas.renderAll();
+            },{ crossOrigin: 'Anonymous' });
+          }
         };
       }
     }).catch(error => {
