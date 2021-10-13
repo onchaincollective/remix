@@ -179,17 +179,21 @@ function Home() {
               canvas.setDimensions({width: 500, height: img.getScaledHeight()});
               canvas.setBackgroundImage(img);
               canvas.renderAll();
-            });
+            }, { crossOrigin: 'Anonymous' });
         } else if (fileType === 'image/svg+xml') { //check if svg
           let reader = new FileReader();
           reader.readAsText(file, "UTF-8");
           reader.onload = function (evt) {
             let parser = new DOMParser();
             let xmlDoc = parser.parseFromString(evt.target.result, "text/xml");
+            if (xmlDoc.getElementsByTagName("svg").length > 0) {
+              xmlDoc.getElementsByTagName("svg")[0].setAttribute('width', 500);
+            }
             fabric.Image.fromURL("data:image/svg+xml;base64," + base64(xmlDoc), function(img) {
-              let img3 = img.set({left: 0,top: 0, lockMovementX: true, lockMovementY: true, selectable: false, opacity: 0.5, mode: 'overlay'  })
+              let img3 = img.set({left: 0,top: 0, lockMovementX: true, lockMovementY: true, selectable: false, mode: 'overlay'  })
               img3.scaleToWidth(500);
-              canvas.add(img3);
+              canvas.setDimensions({width: 500, height: img.getScaledHeight()});
+              canvas.setBackgroundImage(img);
               canvas.renderAll();
             }, { crossOrigin: 'Anonymous' });
           }
@@ -292,15 +296,16 @@ function Home() {
               <>
                 {nftWithoutFlwrs.length > 0 ?
                   <>
-                    <div className="ghost-button back-button" onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
+                    <div className={bgImage ? "cursor-not-allowed back-button" : "ghost-button back-button"}
+                      onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
                     <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
                       {bgImage ? "Choose your base jpeg" : "Now add all the flowers you want to your pfp"}
                     </p>
                     {bgImage ?
-                      <button className="ghost-button disabled:opacity-50 disabled:cursor-not-allowed" 
+                      <button className={bgImageSelected ? "button" : "ghost-button"}
                         onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
                       :
-                      <div className={nftFlwrs.length > 0 ? "button" : "ghost-button"} onClick={() => downloadPFP()}>download jpeg</div>
+                      <div className={nftFlwrs.length > 0 ? "button" : "ghost-button"} onClick={() => downloadPFP()}>download</div>
                     }
                   </>
                   :
