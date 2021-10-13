@@ -157,6 +157,7 @@ function Home() {
     setBgImageSelected(false);
     setNftRenders(null);
     setNftImages(nftWithoutFlwrs, true);
+    canvas.setDimensions({width: 500, height: 500});
     canvas.clear();
   }
 
@@ -167,20 +168,30 @@ function Home() {
   function loadFile(url, bgImage) {
     let output = document.getElementById("output");
     output.src = url;
-
-    if (bgImage) {
-      console.log('setting bgimg');
-      fabric.Image.fromURL(output.src, function(img) {
-        let img3 = img.set({left: 0,top: 0 })
-        img3.scaleToWidth(500);
-        canvas.setDimensions({width: 500, height: img3.getScaledHeight()});
-        canvas.setBackgroundImage(img3);
-        canvas.renderAll();
-      }, { crossOrigin: 'Anonymous' }); //Imp for crossorigin
-      setBgImageSelected(true);
-    } else {
-      console.log('adding flowers');
-      getFileFromUrl(url, 'nft.jpg').then((file) => {
+    getFileFromUrl(url, 'nft.jpg').then((file) => {
+      if (bgImage) {
+        console.log('setting bgimg');
+        let fileType = file.type;
+        let url = URL.createObjectURL(file);
+        if (fileType === 'image/png' || fileType === 'image/jpg' || fileType === 'image/jpeg' || fileType === 'image/gif') { //check if img
+            fabric.Image.fromURL(url, function(img) {
+              img.scaleToWidth(500);
+              canvas.setDimensions({width: 500, height: img.getScaledHeight()});
+              canvas.setBackgroundImage(img);
+              canvas.renderAll();
+            });
+        } else if (fileType === 'image/svg+xml') { //check if svg
+          fabric.loadSVGFromURL(url, function(objects, options) {
+            var svg = fabric.util.groupSVGElements(objects, options);
+            svg.scaleToWidth(500);
+            canvas.setDimensions({width: 500, height: svg.getScaledHeight()});
+            canvas.setBackgroundImage(svg);
+            canvas.renderAll();
+          });
+        }
+        setBgImageSelected(true);
+      } else {
+        console.log('adding flowers');
         let reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = function (evt) {
@@ -217,12 +228,11 @@ function Home() {
             canvas.add(img3);
             canvas.renderAll();
           },{ crossOrigin: 'Anonymous' });
-
         };
-      }).catch(error => {
-        console.log("There was an error loading the image :(", error);
-      });
-    }
+      }
+    }).catch(error => {
+      console.log("There was an error loading the image :(", error);
+    })
   }
   
   return (
@@ -313,7 +323,7 @@ function Home() {
           </div>
         </div>
         {active && !working && nftWithoutFlwrs.length > 0&& 
-          <div className="flex flex-row space-x-8 mx-auto items-center text-center mt-12 mb-12 max-w-5xl">
+          <div className="flex flex-row space-x-8 mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
             <div>
               <img id="output" crossOrigin="anonymous" className="hidden"/>
               <canvas id="c" width="500" height="500" crossOrigin="anonymous"></canvas>
