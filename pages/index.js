@@ -252,16 +252,16 @@ function Home() {
             <meta name="description" content="Create pfps by remixing your existing jpegs and adding flowers you own"/>
 
             <meta property="og:type" content="website"/>
-            <meta property="og:url" content="https://www.remix.occ.xyz/remix"/>
+            <meta property="og:url" content="https://remix.occ.xyz/"/>
             <meta property="og:title" content="the Remix by OCC"/>
             <meta property="og:description" content="Create pfps by remixing your existing jpegs and adding flowers you own"/>
-            <meta property="og:image" content="https://www.remix.occ.xyz/remix/social_image.png"/>
+            <meta property="og:image" content="https://remix.occ.xyz/remix/social_image.png"/>
 
             <meta property="twitter:card" content="summary_large_image"/>
-            <meta property="twitter:url" content="https://www.remix.occ.xyz/remix"/>
+            <meta property="twitter:url" content="https://remix.occ.xyz/"/>
             <meta property="twitter:title" content="the Remix by OCC"/>
             <meta property="twitter:description" content="Create pfps by remixing your existing jpegs and adding flowers you own"/>
-            <meta property="twitter:image" content="https://www.remix.occ.xyz/remix/social_image.png"/>
+            <meta property="twitter:image" content="https://remix.occ.xyz/remix/social_image.png"/>
             <link rel="icon" href="/remix/favicon.ico" sizes="any" />
             <link rel="icon" href="/remix/icon.png" type="image/png" />
             <link rel="apple-touch-icon" href="/remix/apple-touch-icon.png" />
