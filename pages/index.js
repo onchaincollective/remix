@@ -138,7 +138,7 @@ function Home() {
   function downloadPFP() {
     canvas.discardActiveObject().renderAll();
     canvas.getElement().toBlob(function(blob) {
-      saveAs(blob, "occ_flowers_remix.jpeg");
+      saveAs(blob, "occ_flowers_remix");
     });
   }
 
@@ -181,13 +181,18 @@ function Home() {
               canvas.renderAll();
             });
         } else if (fileType === 'image/svg+xml') { //check if svg
-          fabric.loadSVGFromURL(url, function(objects, options) {
-            var svg = fabric.util.groupSVGElements(objects, options);
-            svg.scaleToWidth(500);
-            canvas.setDimensions({width: 500, height: svg.getScaledHeight()});
-            canvas.setBackgroundImage(svg);
-            canvas.renderAll();
-          });
+          let reader = new FileReader();
+          reader.readAsText(file, "UTF-8");
+          reader.onload = function (evt) {
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(evt.target.result, "text/xml");
+            fabric.Image.fromURL("data:image/svg+xml;base64," + base64(xmlDoc), function(img) {
+              let img3 = img.set({left: 0,top: 0, lockMovementX: true, lockMovementY: true, selectable: false, opacity: 0.5, mode: 'overlay'  })
+              img3.scaleToWidth(500);
+              canvas.add(img3);
+              canvas.renderAll();
+            }, { crossOrigin: 'Anonymous' });
+          }
         }
         setBgImageSelected(true);
       } else {
@@ -326,7 +331,9 @@ function Home() {
           <div className="flex flex-row space-x-8 mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
             <div>
               <img id="output" crossOrigin="anonymous" className="hidden"/>
-              <canvas id="c" width="500" height="500" crossOrigin="anonymous"></canvas>
+              <div className="canvas">
+                <canvas id="c" width="500" height="500" crossOrigin="anonymous"></canvas>
+              </div>
               <div id="svg-tag" crossOrigin="anonymous"></div>
             </div>
             <div className="felx flex-col items-center w-full h-full justify-center">
