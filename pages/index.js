@@ -138,7 +138,7 @@ function Home() {
   function downloadPFP() {
     canvas.discardActiveObject().renderAll();
     canvas.getElement().toBlob(function(blob) {
-      saveAs(blob, "occ_flowers_remix.png");
+      saveAs(blob, "occ_flowers_remix.jpeg");
     });
   }
 
