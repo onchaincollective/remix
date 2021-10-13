@@ -240,19 +240,19 @@ function Home() {
         <Head>
             <title>the Remix by OCC</title>
             <meta name="title" content="the Remix by OCC"/>
-            <meta name="description" content="Create pfps by remixing your existing NFTs and adding flowers you own"/>
+            <meta name="description" content="Create pfps by remixing your existing jpegs and adding flowers you own"/>
 
             <meta property="og:type" content="website"/>
-            <meta property="og:url" content="https://www.occ.xyz/flowers/remix"/>
+            <meta property="og:url" content="https://www.remix.occ.xyz/remix"/>
             <meta property="og:title" content="the Remix by OCC"/>
-            <meta property="og:description" content="Create pfps by remixing your existing NFTs and adding flowers you own"/>
-            <meta property="og:image" content="https://www.occ.xyz/flowers/social_image.png"/>
+            <meta property="og:description" content="Create pfps by remixing your existing jpegs and adding flowers you own"/>
+            <meta property="og:image" content="https://www.remix.occ.xyz/remix/social_image.png"/>
 
             <meta property="twitter:card" content="summary_large_image"/>
-            <meta property="twitter:url" content="https://www.occ.xyz/flowers/remix"/>
+            <meta property="twitter:url" content="https://www.remix.occ.xyz/remix"/>
             <meta property="twitter:title" content="the Remix by OCC"/>
-            <meta property="twitter:description" content="Create pfps by remixing your existing NFTs and adding flowers you own"/>
-            <meta property="twitter:image" content="https://www.occ.xyz/flowers/social_image.png"/>
+            <meta property="twitter:description" content="Create pfps by remixing your existing jpegs and adding flowers you own"/>
+            <meta property="twitter:image" content="https://www.remix.occ.xyz/remix/social_image.png"/>
             <link rel="icon" href="/remix/favicon.ico" sizes="any" />
             <link rel="icon" href="/remix/icon.png" type="image/png" />
             <link rel="apple-touch-icon" href="/remix/apple-touch-icon.png" />
