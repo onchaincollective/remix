@@ -17,6 +17,7 @@ const wcConnector = new WalletConnectConnector({
 });
 let canvas;
 const ESCAPE_KEYS = ['46', 'Delete', 'Backspace'];
+const limit = 20;
 
 export default function WrappedHome() {
     return (
@@ -36,38 +37,43 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [bgImage, setBgImage] = useState(true);
   const [bgImageSelected, setBgImageSelected] = useState(false);
-  const [nftWithoutFlwrs, setNftWithoutFlwrs] = useState([]);
-  const [nftFlwrs, setNftFlwrs] = useState([]);
-  const [nftRenders, setNftRenders] = useState(null);
-  const [emptyState, setEmptyState] = useState(true);
+  const [jpegWithoutFlwrs, setJpegWithoutFlwrs] = useState([]);
+  const [jpegFlwrs, setJpegFlwrs] = useState([]);
+  const [jpegRenders, setJpegRenders] = useState(null);
+  const [apiOffset, setApiOffset] = useState(0);
+  const [jpegArray, setJpegArray] = useState([]);
 
   useEventListener('keydown', handler);
   
   useEffect(() => {
     if (!library) return;
 
-    console.log("Fetching details for account: ", account)
+    console.log("Fetching details for account: ", account);
+    fetchNfts(apiOffset)
+    
+  }, [account]);
 
+  function fetchNfts(offset) {
     setWorking(true);
-
-    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset=0&limit=50")
+    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + limit + "")
     .then(res => res.json())
     .then(
       (result) => {
-        console.log(result);
         let nftArray = result.assets;
+        
         let nftArrayFlwrs = nftArray.filter((nft) => {
           return nft.asset_contract.address === contractAddress;
         });
         let nftArrayWithoutFlwrs = nftArray.filter((nft) => {
           return nft.asset_contract.address !== contractAddress;
         });
-        setNftWithoutFlwrs(nftArrayWithoutFlwrs);
-        setNftFlwrs(nftArrayFlwrs);
+        setJpegArray(nftArray);
+        setJpegWithoutFlwrs(nftArrayWithoutFlwrs);
+        setJpegFlwrs(nftArrayFlwrs);
         setWorking(false);
 
         // Initiating fabric canvas
-        setNftImages(nftArrayWithoutFlwrs, true);
+        setNftImages(nftArrayWithoutFlwrs, nftArray, true);
         canvas = new fabric.Canvas("c");
       },
       (error) => {
@@ -75,16 +81,16 @@ function Home() {
         console.log("Oops, there was an error while fetching your jpegs", error);
       }
     )
-  }, [account]);
+  }
 
-  useEffect(() => {
-    if (nftRenders && nftRenders.length > 0) {
-      setEmptyState(false);
-    }
-  }, [nftRenders])
+  function loadMoreJpegs() {
+    let newOffset = apiOffset + limit;
+    console.log(newOffset);
+    fetchNfts(newOffset);
+  }
 
-    // Method to set URLs for nfts in selection view
-  function setNftImages(nftArray, bgImage) {
+  // Method to set URLs for nfts in selection view
+  function setNftImages(nftArray, totalNfts, bgImage) {
     let nftRendersMap = nftArray.map((nft, i) =>
       <img 
         src={nft.image_url} 
@@ -93,7 +99,17 @@ function Home() {
         onClick={() => loadFile(nft.image_url, bgImage)}
         />
     );
-    setNftRenders(nftRendersMap);
+    console.log(totalNfts);
+    if (totalNfts.length === 20) {
+      let loadMore = <div className="text-md cursor-pointer flex flex-col justify-center" 
+                        key={1223} 
+                        onClick={() => loadMoreJpegs()}>
+                          got more jpegs? 👀 
+                          <span className="italic underline">Load more</span>
+                        </div>
+      nftRendersMap.push(loadMore)
+    }
+    setJpegRenders(nftRendersMap);
   }
 
   // Keyboard event handler method
@@ -146,17 +162,17 @@ function Home() {
   function refreshNfts() {
     console.log('refreshing nfts');
     setBgImage(false);
-    setNftRenders(null);
+    setJpegRenders(null);
     // setNftImages([], false);
-    setNftImages(nftFlwrs, false);
+    setNftImages(jpegFlwrs, false);
   }
 
   // Method to reset to first step
   function goToBaseStep() {
     setBgImage(true);
     setBgImageSelected(false);
-    setNftRenders(null);
-    setNftImages(nftWithoutFlwrs, true);
+    setJpegRenders(null);
+    setNftImages(jpegWithoutFlwrs, true);
     canvas.setDimensions({width: 500, height: 500});
     canvas.clear();
   }
@@ -269,7 +285,7 @@ function Home() {
             <link rel="manifest" href="/manifest.webmanifest" />
             {/* Global Site Tag (gtag.js) - Google Analytics */}
             <script async src="https://www.googletagmanager.com/gtag/js?id=G-0QRHNTF9FY"></script>
-            <script
+            {/* <script
                 dangerouslySetInnerHTML={{
                 __html: `
                 window.dataLayer = window.dataLayer || [];
@@ -280,7 +296,7 @@ function Home() {
                 });
             `,
                 }}
-            />
+            /> */}
         </Head>
       
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
@@ -309,7 +325,7 @@ function Home() {
             }
             {active && !working &&
               <>
-                {nftWithoutFlwrs.length > 0 ?
+                {jpegWithoutFlwrs.length > 0 ?
                   <>
                     <div className={bgImage ? "cursor-not-allowed back-button" : "ghost-button back-button"}
                       onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
@@ -320,13 +336,13 @@ function Home() {
                       <button className={bgImageSelected ? "button" : "ghost-button"}
                         onClick={() => refreshNfts()}  disabled={!bgImageSelected}>next</button>
                       :
-                      <div className={nftFlwrs.length > 0 ? "button" : "ghost-button"} onClick={() => downloadPFP()}>download</div>
+                      <div className={jpegFlwrs.length > 0 ? "button" : "ghost-button"} onClick={() => downloadPFP()}>download</div>
                     }
                   </>
                   :
                   <div className="flex flex-col max-w-xl mx-auto text-2xl text-left md:p-4 p-6">
                     <p className="text-center">
-                      {nftFlwrs.length > 0 ?
+                      {jpegFlwrs.length > 0 ?
                         <span>
                           Looks like you don't have any jpegs other than flowers in your wallet to remix.
                           Get some now on <a href="https://opensea.io" target="_blank" className="hover:underline italic">opensea</a>
@@ -347,7 +363,7 @@ function Home() {
             }
           </div>
         </div>
-        {active && !working && nftWithoutFlwrs.length > 0&& 
+        {active && !working && jpegWithoutFlwrs.length > 0&& 
           <div className="flex flex-row space-x-8 mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
             <div>
               <img id="output" crossOrigin="anonymous" className="hidden"/>
@@ -357,9 +373,9 @@ function Home() {
               <div id="svg-tag" crossOrigin="anonymous"></div>
             </div>
             <div className="felx flex-col items-center w-full h-full justify-center">
-              {nftRenders && nftRenders.length > 0 ?
+              {jpegRenders && jpegRenders.length > 0 ?
               <div className="grid grid-cols-4 gap-4 nfts"> 
-                {nftRenders}
+                {jpegRenders}
               </div>
               :
               <div className="flex items-center flex-col justify-center p-16">
