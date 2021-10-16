@@ -11,13 +11,19 @@ import useEventListener from '@use-it/event-listener';
 
 
 const contractAddress = "0x5a876ffc6e75066f5ca870e20fca4754c1efe91f";
+// const contractAddress = "0x1af7a7555263f275433c6bb0b8fdcd231f89b1d7";
+// const contractAddress2 = "0x7c4fa5211c232d3c7d156253d3538e36bf3931e2";
+// const contractAddress3 = "0xb3ac4965a94b87c9b6ab63c3338ae2dd7a17334c";
+// const contractAddress4 = "0x53270462ca2a7133ad0de07bc0f652e227ba8e0b"
 const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42] });
 const wcConnector = new WalletConnectConnector({
   infuraId: "6041be06ca6b4e848a530e495d66e45d",
 });
 let canvas;
 const ESCAPE_KEYS = ['46', 'Delete', 'Backspace'];
-const limit = 20;
+const apiLimit = 50;
+let apiOffset = 0;
+let showLoadMore = false;
 
 export default function WrappedHome() {
     return (
@@ -39,77 +45,82 @@ function Home() {
   const [bgImageSelected, setBgImageSelected] = useState(false);
   const [jpegWithoutFlwrs, setJpegWithoutFlwrs] = useState([]);
   const [jpegFlwrs, setJpegFlwrs] = useState([]);
-  const [jpegRenders, setJpegRenders] = useState(null);
-  const [apiOffset, setApiOffset] = useState(0);
+  const [jpegRenders, setJpegRenders] = useState([]);
   const [jpegArray, setJpegArray] = useState([]);
 
   useEventListener('keydown', handler);
   
   useEffect(() => {
     if (!library) return;
-
     console.log("Fetching details for account: ", account);
     fetchNfts(apiOffset)
     
   }, [account]);
 
   function fetchNfts(offset) {
-    setWorking(true);
-    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + limit + "")
+    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + apiLimit + "")
     .then(res => res.json())
     .then(
       (result) => {
-        let nftArray = result.assets;
-        
+        let nftArray = jpegArray;
+        nftArray.push(...result.assets)
+        showLoadMore = result.assets.length === apiLimit;
+        setJpegArray(nftArray);
         let nftArrayFlwrs = nftArray.filter((nft) => {
           return nft.asset_contract.address === contractAddress;
         });
         let nftArrayWithoutFlwrs = nftArray.filter((nft) => {
           return nft.asset_contract.address !== contractAddress;
         });
-        setJpegArray(nftArray);
         setJpegWithoutFlwrs(nftArrayWithoutFlwrs);
         setJpegFlwrs(nftArrayFlwrs);
         setWorking(false);
-
+        // console.log("Total NFTs");
+        // console.log(nftArray);
+        // console.log("======================");
+        // console.log("NFTs without flowers");
+        // console.log(nftArrayWithoutFlwrs);
+        // console.log("======================");
+        apiOffset = apiOffset + apiLimit;
+        setNftImages(nftArrayWithoutFlwrs, true, showLoadMore);
         // Initiating fabric canvas
-        setNftImages(nftArrayWithoutFlwrs, nftArray, true);
-        canvas = new fabric.Canvas("c");
+        if (!canvas) {
+          canvas = new fabric.Canvas("c");
+        }
       },
       (error) => {
         setWorking(false);
         console.log("Oops, there was an error while fetching your jpegs", error);
       }
-    )
-  }
-
-  function loadMoreJpegs() {
-    let newOffset = apiOffset + limit;
-    console.log(newOffset);
-    fetchNfts(newOffset);
+    )    
   }
 
   // Method to set URLs for nfts in selection view
-  function setNftImages(nftArray, totalNfts, bgImage) {
+  function setNftImages(nftArray, bgImage, showLoadMore) {
     let nftRendersMap = nftArray.map((nft, i) =>
       <img 
-        src={nft.image_url} 
-        key={i}
-        className="cursor-pointer w-full rounded-lg"
-        onClick={() => loadFile(nft.image_url, bgImage)}
-        />
+      src={nft.image_url} 
+      key={i}
+      className="cursor-pointer w-full rounded-lg"
+      onClick={() => loadFile(nft.image_url, bgImage)}
+      />
     );
-    console.log(totalNfts);
-    if (totalNfts.length === 20) {
-      let loadMore = <div className="text-md cursor-pointer flex flex-col justify-center" 
-                        key={1223} 
-                        onClick={() => loadMoreJpegs()}>
-                          got more jpegs? 👀 
-                          <span className="italic underline">Load more</span>
-                        </div>
+
+    if (showLoadMore) {
+      let loadMore = <div className="text-md cursor-pointer flex flex-col justify-center"
+                      key={1223}
+                      onClick={() => loadMoreJpegs()}>
+                        got more jpegs? 👀
+                        <span className="italic underline">Load more</span>
+                      </div>
       nftRendersMap.push(loadMore)
     }
+
     setJpegRenders(nftRendersMap);
+  }
+
+  function loadMoreJpegs() {
+    fetchNfts(apiOffset);
   }
 
   // Keyboard event handler method
@@ -172,7 +183,7 @@ function Home() {
     setBgImage(true);
     setBgImageSelected(false);
     setJpegRenders(null);
-    setNftImages(jpegWithoutFlwrs, true);
+    setNftImages(jpegWithoutFlwrs, true, showLoadMore);
     canvas.setDimensions({width: 500, height: 500});
     canvas.clear();
   }
@@ -301,7 +312,7 @@ function Home() {
       
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
           <header className="text-5xl md:text-6xl font-snell flex items-center justify-center mt-6">
-            <img src="/remix/logo.png" className="w-2/6"/>
+            <img src="/remix/logo.png" className="w-5/6 sm:w-2/6"/>
           </header>
           <div className="flex flex-row space-between items-center align-center -mt-8 w-full">
            {!active &&
@@ -312,9 +323,9 @@ function Home() {
                 <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
                     <ConnectButtons setWorking={setWorking} activate={activate} />
                 </div>
-                <div className="flex flex-row space-x-8 mt-8 items-center justify-center">
-                  <img src="/remix/pfpflip.gif" className="rounded-xl w-96"/>
-                  <img src="/remix/flowerflip.gif" className="rounded-xl w-96"/>
+                <div className="flex flex-row max-w-xs mx-auto space-x-6 md:space-x-8 mt-8 items-center justify-center">
+                  <img src="/remix/pfpflip.gif" className="rounded-xl w-40 md:w-96"/>
+                  <img src="/remix/flowerflip.gif" className="rounded-xl w-40 md:w-96"/>
                 </div>
               </div>
             }
@@ -364,8 +375,8 @@ function Home() {
           </div>
         </div>
         {active && !working && jpegWithoutFlwrs.length > 0&& 
-          <div className="flex flex-row space-x-8 mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
-            <div>
+          <div className="flex flex-col md:flex-row space-x-8 mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
+            <div className="w-full">
               <img id="output" crossOrigin="anonymous" className="hidden"/>
               <div className="canvas">
                 <canvas id="c" width="500" height="500" crossOrigin="anonymous"></canvas>
