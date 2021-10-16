@@ -21,7 +21,7 @@ const wcConnector = new WalletConnectConnector({
 });
 let canvas;
 const ESCAPE_KEYS = ['46', 'Delete', 'Backspace'];
-const apiLimit = 50;
+const apiLimit = 20;
 let apiOffset = 0;
 let showLoadMore = false;
 
