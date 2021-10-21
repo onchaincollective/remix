@@ -11,17 +11,14 @@ import useEventListener from '@use-it/event-listener';
 
 
 const contractAddress = "0x5a876ffc6e75066f5ca870e20fca4754c1efe91f";
-// const contractAddress = "0x1af7a7555263f275433c6bb0b8fdcd231f89b1d7";
-// const contractAddress2 = "0x7c4fa5211c232d3c7d156253d3538e36bf3931e2";
-// const contractAddress3 = "0xb3ac4965a94b87c9b6ab63c3338ae2dd7a17334c";
-// const contractAddress4 = "0x53270462ca2a7133ad0de07bc0f652e227ba8e0b"
+
 const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42] });
 const wcConnector = new WalletConnectConnector({
   infuraId: "6041be06ca6b4e848a530e495d66e45d",
 });
 let canvas;
 const ESCAPE_KEYS = ['46', 'Delete', 'Backspace'];
-const apiLimit = 20;
+const apiLimit = 50;
 let apiOffset = 0;
 let showLoadMore = false;
 
