@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, createRef } from "react";
 import Web3 from "web3";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
@@ -47,6 +47,8 @@ function Home() {
   const [jpegFlwrs, setJpegFlwrs] = useState([]);
   const [jpegRenders, setJpegRenders] = useState([]);
   const [jpegArray, setJpegArray] = useState([]);
+  const [apiLoading, setApiLoading] = useState(false);
+  const loadButtonRef = useRef(null);
 
   useEventListener('keydown', handler);
   
@@ -58,6 +60,7 @@ function Home() {
   }, [account]);
 
   function fetchNfts(offset) {
+    setApiLoading(true);
     fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + apiLimit + "")
     .then(res => res.json())
     .then(
@@ -75,6 +78,7 @@ function Home() {
         setJpegWithoutFlwrs(nftArrayWithoutFlwrs);
         setJpegFlwrs(nftArrayFlwrs);
         setWorking(false);
+        setApiLoading(false);
         // console.log("Total NFTs");
         // console.log(nftArray);
         // console.log("======================");
@@ -90,6 +94,7 @@ function Home() {
       },
       (error) => {
         setWorking(false);
+        setApiLoading(false);
         console.log("Oops, there was an error while fetching your jpegs", error);
       }
     )    
@@ -98,8 +103,8 @@ function Home() {
   // Method to set URLs for nfts in selection view
   function setNftImages(nftArray, bgImage, showLoadMore) {
     let nftRendersMap = nftArray.map((nft, i) =>
-      <img 
-      src={nft.image_url} 
+      <img
+      src={nft.image_url}
       key={i}
       className="cursor-pointer w-full rounded-lg"
       onClick={() => loadFile(nft.image_url, bgImage)}
@@ -107,11 +112,11 @@ function Home() {
     );
 
     if (showLoadMore) {
-      let loadMore = <div className="text-md cursor-pointer flex flex-col justify-center"
+      let loadMore = <div className={apiLoading ? "hidden load-button" : "load-button"}
+                      ref={loadButtonRef}
                       key={1223}
                       onClick={() => loadMoreJpegs()}>
-                        got more jpegs? 👀
-                        <span className="italic underline">Load more</span>
+                        load more
                       </div>
       nftRendersMap.push(loadMore)
     }

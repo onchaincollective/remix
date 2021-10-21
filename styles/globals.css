@@ -144,6 +144,25 @@ body {
   transform: translateX(-4px) rotate(-45deg);
 }
 
+.load-button {
+  justify-content: center;
+  align-items: center;
+  background: black;
+  height: 40px;
+  border: 1px solid white;
+  border-radius: 20px;
+  display: flex;
+  font-style: italic;
+  color: white;
+  margin-top: 40px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+.load-button:hover {
+  background-color: #e4e4e4;
+  color: black;
+}
+
 .arrow-left {
   display: inline-block;
   transition: all 200ms ease-in-out;
