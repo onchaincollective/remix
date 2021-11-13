@@ -46,19 +46,31 @@ function Home() {
   const [jpegArray, setJpegArray] = useState([]);
   const [apiLoading, setApiLoading] = useState(false);
   const loadButtonRef = useRef(null);
+  const [screenWidth, setScreenWidth] = useState(500);
 
   useEventListener('keydown', handler);
-  
+
+  useEffect(() => {
+    if (screen.width < 480) {
+      setScreenWidth(screen.width);
+    } else {
+      setScreenWidth(500);
+    }
+  }, []);
+
   useEffect(() => {
     if (!library) return;
     console.log("Fetching details for account: ", account);
     fetchNfts(apiOffset)
-    
   }, [account]);
 
   function fetchNfts(offset) {
     setApiLoading(true);
-    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + apiLimit + "")
+    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + apiLimit + "", {
+      headers: {
+        'X-API-KEY': '3ae9e8c3816a43c4add31069b1a673f9', // API key
+      }
+    })
     .then(res => res.json())
     .then(
       (result) => {
@@ -87,6 +99,8 @@ function Home() {
         // Initiating fabric canvas
         if (!canvas) {
           canvas = new fabric.Canvas("c");
+          console.log(screenWidth);
+          canvas.setDimensions({width: screenWidth, height: screenWidth});
         }
       },
       (error) => {
@@ -186,7 +200,7 @@ function Home() {
     setBgImageSelected(false);
     setJpegRenders(null);
     setNftImages(jpegWithoutFlwrs, true, showLoadMore);
-    canvas.setDimensions({width: 500, height: 500});
+    canvas.setDimensions({width: screenWidth, height: 500});
     canvas.clear();
   }
 
@@ -204,8 +218,8 @@ function Home() {
         let url = URL.createObjectURL(file);
         if (fileType === 'image/png' || fileType === 'image/jpg' || fileType === 'image/jpeg' || fileType === 'image/gif') { //check if img
             fabric.Image.fromURL(url, function(img) {
-              img.scaleToWidth(500);
-              canvas.setDimensions({width: 500, height: img.getScaledHeight()});
+              img.scaleToWidth(screenWidth);
+              canvas.setDimensions({width: screenWidth, height: img.getScaledHeight()});
               canvas.setBackgroundImage(img);
               canvas.renderAll();
             }, { crossOrigin: 'Anonymous' });
@@ -220,8 +234,8 @@ function Home() {
             }
             fabric.Image.fromURL("data:image/svg+xml;base64," + base64(xmlDoc), function(img) {
               let img3 = img.set({left: 0,top: 0, lockMovementX: true, lockMovementY: true, selectable: false, mode: 'overlay'  })
-              img3.scaleToWidth(500);
-              canvas.setDimensions({width: 500, height: img.getScaledHeight()});
+              img3.scaleToWidth(screenWidth);
+              canvas.setDimensions({width: screenWidth, height: img.getScaledHeight()});
               canvas.setBackgroundImage(img);
               canvas.renderAll();
             }, { crossOrigin: 'Anonymous' });
@@ -342,7 +356,7 @@ function Home() {
                   <>
                     <div className={bgImage ? "cursor-not-allowed back-button" : "ghost-button back-button"}
                       onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
-                    <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
+                    <p className="text-center max-w-xl mx-auto text-md sm:text-2xl text-left  md:p-4 p-6">
                       {bgImage ? "Choose your base jpeg" : "Now add all the flowers you want to your pfp"}
                     </p>
                     {bgImage ?
@@ -377,7 +391,7 @@ function Home() {
           </div>
         </div>
         {active && !working && jpegWithoutFlwrs.length > 0&& 
-          <div className="flex flex-col md:flex-row space-x-8 mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
+          <div className="flex flex-col md:flex-row mx-auto items-start text-center mt-12 mb-12 max-w-5xl">
             <div className="w-full">
               <img id="output" crossOrigin="anonymous" className="hidden"/>
               <div className="canvas">
@@ -385,7 +399,7 @@ function Home() {
               </div>
               <div id="svg-tag" crossOrigin="anonymous"></div>
             </div>
-            <div className="felx flex-col items-center w-full h-full justify-center">
+            <div className="felx flex-col items-center sm:ml-8 mt-24 sm:mt-0 w-full h-full justify-center">
               {jpegRenders && jpegRenders.length > 0 ?
               <div className="grid grid-cols-4 gap-4 nfts"> 
                 {jpegRenders}
