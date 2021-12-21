@@ -188,10 +188,25 @@ function Home() {
   // Method to show only flower nfts
   function refreshNfts() {
     console.log('refreshing nfts');
+    setLoading(true);
     setBgImage(false);
     setJpegRenders(null);
     // setNftImages([], false);
-    setNftImages(jpegFlwrs, false);
+    let santaHat = [
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat1.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat2.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat3.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat4.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat5.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat6.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat7.png'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat8.png'}, 
+      // {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat9.svg'}, 
+      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat10.png'}];
+    let flwrsWithSantaHat = santaHat.concat(jpegFlwrs);
+    console.log(flwrsWithSantaHat);
+    setNftImages(flwrsWithSantaHat, false);
+    setLoading(false);
   }
 
   // Method to reset to first step
@@ -280,6 +295,14 @@ function Home() {
               canvas.add(img3);
               canvas.renderAll();
             },{ crossOrigin: 'Anonymous' });
+          } else {
+            let url = URL.createObjectURL(file);
+            fabric.Image.fromURL(url, function(img) {
+              let img3 = img.set({left: 100,top: 100})
+              img3.scaleToWidth(300);
+              canvas.add(img3);
+              canvas.renderAll();
+            }, { crossOrigin: 'Anonymous' });
           }
         };
       }
@@ -325,7 +348,7 @@ function Home() {
                 }}
             /> */}
         </Head>
-      
+        
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
           <header className="text-5xl md:text-6xl font-snell flex items-center justify-center mt-6">
             <img src="/remix/logo.png" className="w-5/6 sm:w-2/6"/>
@@ -334,7 +357,7 @@ function Home() {
            {!active &&
               <div className="flex flex-col max-w-xl mx-auto">
                 <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
-                  Flaunt your flowers by remixing with jpegs you own. Connect your wallet to get started
+                  Make merry by remixing with jpegs you own. <br/> Connect your wallet to get started
                 </p>
                 <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
                     <ConnectButtons setWorking={setWorking} activate={activate} />
@@ -357,7 +380,7 @@ function Home() {
                     <div className={bgImage ? "cursor-not-allowed back-button" : "ghost-button back-button"}
                       onClick={() => goToBaseStep()}>{!bgImage  && <span><span className="arrow-left"/> back</span>}</div>
                     <p className="text-center max-w-xl mx-auto text-md sm:text-2xl text-left  md:p-4 p-6">
-                      {bgImage ? "Choose your base jpeg" : "Now add all the flowers you want to your pfp"}
+                      {bgImage ? "Choose your base jpeg" : "Now add flowers you own or santa hats to your pfp"}
                     </p>
                     {bgImage ?
                       <button className={bgImageSelected ? "button" : "ghost-button"}
@@ -417,6 +440,10 @@ function Home() {
         }
         <div className="flex align-center flex-col max-w-2xl mx-auto text-center mt-8 mb-8 p-4">
           <div className="text-md ">
+            <a href="https://occ.xyz/" target="_blank" className="hover:underline">
+              occ
+            </a>
+            {" "}&bull;{" "}
             <a href="https://occ.xyz/flowers" target="_blank" className="hover:underline">
               flowers
             </a>
@@ -430,6 +457,7 @@ function Home() {
             </a>
           </div>
         </div>
+        {/* <Snowfall snowflakeCount={20}/> */}
     </main>
   );
 }
