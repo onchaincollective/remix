@@ -8,6 +8,7 @@ import cn from "classnames";
 import { fabric } from "fabric";
 import { saveAs } from 'file-saver';
 import useEventListener from '@use-it/event-listener';
+import Snowfall from 'react-snowfall';
 
 
 const contractAddress = "0x5a876ffc6e75066f5ca870e20fca4754c1efe91f";
@@ -193,7 +194,7 @@ function Home() {
     setJpegRenders(null);
     // setNftImages([], false);
     let santaHat = [
-      {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat1.png'}, 
+      // {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat1.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat2.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat3.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat4.png'}, 
@@ -357,7 +358,7 @@ function Home() {
            {!active &&
               <div className="flex flex-col max-w-xl mx-auto">
                 <p className="text-center max-w-xl mx-auto text-2xl text-left  md:p-4 p-6">
-                  Make merry by remixing with jpegs you own. <br/> Connect your wallet to get started
+                  Add flowers and santa caps to your jpegs. <br/> Connect your wallet to get started
                 </p>
                 <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
                     <ConnectButtons setWorking={setWorking} activate={activate} />
@@ -457,7 +458,7 @@ function Home() {
             </a>
           </div>
         </div>
-        {/* <Snowfall snowflakeCount={20}/> */}
+        <Snowfall snowflakeCount={20}/>
     </main>
   );
 }
