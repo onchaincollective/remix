@@ -336,7 +336,7 @@ function Home() {
             <link rel="manifest" href="/manifest.webmanifest" />
             {/* Global Site Tag (gtag.js) - Google Analytics */}
             <script async src="https://www.googletagmanager.com/gtag/js?id=G-0QRHNTF9FY"></script>
-            {/* <script
+            <script
                 dangerouslySetInnerHTML={{
                 __html: `
                 window.dataLayer = window.dataLayer || [];
@@ -347,7 +347,7 @@ function Home() {
                 });
             `,
                 }}
-            /> */}
+            />
         </Head>
         
         <div className="flex items-center flex-col max-w-5xl mx-auto text-center">
