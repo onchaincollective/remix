@@ -8,7 +8,6 @@ import cn from "classnames";
 import { fabric } from "fabric";
 import { saveAs } from 'file-saver';
 import useEventListener from '@use-it/event-listener';
-import Snowfall from 'react-snowfall';
 
 
 const contractAddress = "0x5a876ffc6e75066f5ca870e20fca4754c1efe91f";
@@ -458,7 +457,6 @@ function Home() {
             </a>
           </div>
         </div>
-        <Snowfall snowflakeCount={20}/>
     </main>
   );
 }
