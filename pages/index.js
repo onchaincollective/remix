@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from 'next/image'
 import { useEffect, useState, useRef, createRef } from "react";
 import Web3 from "web3";
 import { InjectedConnector } from "@web3-react/injected-connector";
@@ -100,15 +101,44 @@ function Home() {
     )    
   }
 
+  const convertImage = (w, h) => `
+  <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <linearGradient id="g">
+      <stop stop-color="#333" offset="0%" />
+      <stop stop-color="#404040" offset="50%" />
+      <stop stop-color="#333" offset="100%" />
+      </linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" fill="#333" rx="20" />
+    <rect id="r" width="${w}" height="${h}" fill="url(#g)" rx="20"/>
+    <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+  </svg>`;
+
+
+  const toBase64 = (str) =>
+    typeof window === 'undefined'
+      ? Buffer.from(str).toString('base64')
+      : window.btoa(str);
+
   // Method to set URLs for nfts in selection view
-  function setNftImages(nftArray, bgImage, showLoadMore) {
+  function setNftImages(nftArray, bgImage) {
     let nftRendersMap = nftArray.map((nft, i) =>
-      <img
-      src={nft.image_url}
-      key={i}
-      className="cursor-pointer w-full rounded-lg"
-      onClick={() => loadFile(nft.image_url, bgImage)}
-      />
+      <div className="flex">
+        <Image
+          src={nft.image_url}
+          alt="NFT"
+          key={i}
+          width={150}
+          height={150}
+          className="cursor-pointer rounded-lg"
+          onClick={() => loadFile(nft.image_url, bgImage)}
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            convertImage(150, 150)
+          )}`}
+          placeholder="blur" // Optional blur-up while loading
+        />
+      </div>
     );
     setJpegRenders(nftRendersMap);
   }
@@ -329,9 +359,33 @@ function Home() {
                 <div className="flex align-center flex-col max-w-4xl mx-auto text-xl text-left mt-6 pb-4">
                     <ConnectButtons setWorking={setWorking} activate={activate} />
                 </div>
-                <div className="flex flex-row max-w-xs mx-auto space-x-6 md:space-x-8 mt-8 items-center justify-center">
-                  <img src="/remix/pfpflip.gif" className="rounded-xl w-40 md:w-96"/>
-                  <img src="/remix/flowerflip.gif" className="rounded-xl w-40 md:w-96"/>
+                <div className="flex flex-row space-x-6 md:space-x-8 mt-8 items-center justify-center">
+                  <div className="flex">
+                    <Image
+                      src="/remix/pfpflip.gif"
+                      alt="PFP flip"
+                      width={500}
+                      height={500}
+                      className="rounded-xl"
+                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                        convertImage(150, 150)
+                      )}`}
+                      placeholder="blur"
+                    />
+                  </div>
+                  <div className="flex">
+                    <Image
+                      src="/remix/flowerflip.gif"
+                      alt="Flower flip"
+                      width={500}
+                      height={500}
+                      className="rounded-xl"
+                      blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                        convertImage(150, 150)
+                      )}`}
+                      placeholder="blur"
+                    />
+                  </div>
                 </div>
               </div>
             }
@@ -371,8 +425,32 @@ function Home() {
                       }
                     </p>
                     <div className="flex flex-row space-x-8 mt-8 items-center justify-center">
-                      <img src="/remix/pfpflip.gif" className="rounded-xl w-96"/>
-                      <img src="/remix/flowerflip.gif" className="rounded-xl w-96"/>
+                      <div className="flex">
+                        <Image
+                          src="/remix/pfpflip.gif"
+                          alt="PFP flip"
+                          width={500}
+                          height={500}
+                          className="rounded-xl"
+                          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                            convertImage(150, 150)
+                          )}`}
+                          placeholder="blur"
+                        />
+                      </div>
+                      <div className="flex">
+                        <Image
+                          src="/remix/flowerflip.gif"
+                          alt="Flower flip"
+                          width={500}
+                          height={500}
+                          className="rounded-xl"
+                          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+                            convertImage(150, 150)
+                          )}`}
+                          placeholder="blur"
+                        />
+                      </div>
                     </div>
                   </div>
                 }
@@ -391,16 +469,16 @@ function Home() {
             </div>
             <div className="felx flex-col items-center sm:ml-8 mt-24 sm:mt-0 w-full h-full justify-center">
               {jpegRenders && jpegRenders.length > 0 ?
-              <div className="grid grid-cols-4 gap-4 nfts"> 
-                {jpegRenders}
-              </div>
-              :
-              <div className="flex items-center flex-col justify-center p-16">
-                <p className="text-lg">
-                🥀 No flowers found in your wallet 🥀
-                </p>
-                <a href="https://opensea.io/collection/flowersonchain" target="_blank" className="ghost-button mt-8">get from opensea</a>
-              </div>
+                <div className="grid grid-cols-4 gap-4 nfts"> 
+                  {jpegRenders}
+                </div>
+                :
+                <div className="flex items-center flex-col justify-center p-16">
+                  <p className="text-lg">
+                  🥀 No flowers found in your wallet 🥀
+                  </p>
+                  <a href="https://opensea.io/collection/flowersonchain" target="_blank" className="ghost-button mt-8">get from opensea</a>
+                </div>
               }
             </div>
           </div>

@@ -1,5 +1,5 @@
 {
-  "name": "pfpremixer",
+  "name": "occ-remix",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,7 +25,6 @@
     "postcss": "^8.3.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-snowfall": "^1.1.1",
     "tailwindcss": "^2.2.15",
     "web3": "^1.5.2"
   },
