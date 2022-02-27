@@ -19,14 +19,15 @@ const wcConnector = new WalletConnectConnector({
 let canvas;
 const ESCAPE_KEYS = ['46', 'Delete', 'Backspace'];
 const apiLimit = 50;
-let apiOffset = 0;
+let nextCursor = "";
+let jpegArray = [];
 let showLoadMore = false;
 
 export default function WrappedHome() {
     return (
-        <Web3ReactProvider getLibrary={getLibrary}>
-        <Home />
-        </Web3ReactProvider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+      <Home />
+      </Web3ReactProvider>
     );
 }
 
@@ -37,15 +38,11 @@ function getLibrary(provider) {
 function Home() {
   const { activate, active, account, library } = useWeb3React();
   const [working, setWorking] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [bgImage, setBgImage] = useState(true);
   const [bgImageSelected, setBgImageSelected] = useState(false);
   const [jpegWithoutFlwrs, setJpegWithoutFlwrs] = useState([]);
   const [jpegFlwrs, setJpegFlwrs] = useState([]);
   const [jpegRenders, setJpegRenders] = useState([]);
-  const [jpegArray, setJpegArray] = useState([]);
-  const [apiLoading, setApiLoading] = useState(false);
-  const loadButtonRef = useRef(null);
   const [screenWidth, setScreenWidth] = useState(500);
 
   useEventListener('keydown', handler);
@@ -61,12 +58,11 @@ function Home() {
   useEffect(() => {
     if (!library) return;
     console.log("Fetching details for account: ", account);
-    fetchNfts(apiOffset)
+    fetchNfts(nextCursor)
   }, [account]);
 
-  function fetchNfts(offset) {
-    setApiLoading(true);
-    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&offset="+ offset + "&limit=" + apiLimit + "", {
+  function fetchNfts(nextCursor) {
+    fetch("https://api.opensea.io/api/v1/assets?owner=" + account +"&order_direction=desc&cursor="+ nextCursor +"&limit=" + apiLimit + "", {
       headers: {
         'X-API-KEY': '3ae9e8c3816a43c4add31069b1a673f9', // API key
       }
@@ -74,38 +70,31 @@ function Home() {
     .then(res => res.json())
     .then(
       (result) => {
-        let nftArray = jpegArray;
-        nftArray.push(...result.assets)
-        showLoadMore = result.assets.length === apiLimit;
-        setJpegArray(nftArray);
-        let nftArrayFlwrs = nftArray.filter((nft) => {
-          return nft.asset_contract.address === contractAddress;
-        });
-        let nftArrayWithoutFlwrs = nftArray.filter((nft) => {
-          return nft.asset_contract.address !== contractAddress;
-        });
-        setJpegWithoutFlwrs(nftArrayWithoutFlwrs);
-        setJpegFlwrs(nftArrayFlwrs);
-        setWorking(false);
-        setApiLoading(false);
-        // console.log("Total NFTs");
-        // console.log(nftArray);
-        // console.log("======================");
-        // console.log("NFTs without flowers");
-        // console.log(nftArrayWithoutFlwrs);
-        // console.log("======================");
-        apiOffset = apiOffset + apiLimit;
-        setNftImages(nftArrayWithoutFlwrs, true, showLoadMore);
-        // Initiating fabric canvas
-        if (!canvas) {
-          canvas = new fabric.Canvas("c");
-          console.log(screenWidth);
-          canvas.setDimensions({width: screenWidth, height: screenWidth});
+        jpegArray.push(...result.assets)
+        if (result.next) {
+          fetchNfts(result.next);
+        } else {
+          let nftArrayFlwrs = jpegArray.filter((nft) => {
+            return nft.asset_contract.address === contractAddress;
+          });
+          let nftArrayWithoutFlwrs = jpegArray.filter((nft) => {
+            return nft.asset_contract.address !== contractAddress;
+          });
+          setJpegWithoutFlwrs(nftArrayWithoutFlwrs);
+          setJpegFlwrs(nftArrayFlwrs);
+
+          setWorking(false);
+  
+          setNftImages(nftArrayWithoutFlwrs, true, showLoadMore);
+          // Initiating fabric canvas
+          if (!canvas) {
+            canvas = new fabric.Canvas("c");
+            canvas.setDimensions({width: screenWidth, height: screenWidth});
+          }
         }
       },
       (error) => {
         setWorking(false);
-        setApiLoading(false);
         console.log("Oops, there was an error while fetching your jpegs", error);
       }
     )    
@@ -121,27 +110,12 @@ function Home() {
       onClick={() => loadFile(nft.image_url, bgImage)}
       />
     );
-
-    if (showLoadMore) {
-      let loadMore = <div className={apiLoading ? "hidden load-button" : "load-button"}
-                      ref={loadButtonRef}
-                      key={1223}
-                      onClick={() => loadMoreJpegs()}>
-                        load more
-                      </div>
-      nftRendersMap.push(loadMore)
-    }
-
     setJpegRenders(nftRendersMap);
   }
 
-  function loadMoreJpegs() {
-    fetchNfts(apiOffset);
-  }
 
   // Keyboard event handler method
   function handler({ key }) {
-    console.log(key);
     if (ESCAPE_KEYS.includes(String(key))) {
       deleteSelectedObjectsFromCanvas();
     }
@@ -152,7 +126,6 @@ function Home() {
     var selection = canvas.getActiveObject();
     if (selection.type === 'activeSelection') {
       selection.forEachObject(function(element) {
-        console.log(element);
         canvas.remove(element);
       });
     }
@@ -188,12 +161,9 @@ function Home() {
   // Method to show only flower nfts
   function refreshNfts() {
     console.log('refreshing nfts');
-    setLoading(true);
     setBgImage(false);
     setJpegRenders(null);
-    // setNftImages([], false);
     let santaHat = [
-      // {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat1.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat2.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat3.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat4.png'}, 
@@ -201,12 +171,9 @@ function Home() {
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat6.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat7.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat8.png'}, 
-      // {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat9.svg'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640089027/Santa-hat/santahat10.png'}];
-    let flwrsWithSantaHat = santaHat.concat(jpegFlwrs);
-    console.log(flwrsWithSantaHat);
+    let flwrsWithSantaHat = jpegFlwrs.concat(santaHat);
     setNftImages(flwrsWithSantaHat, false);
-    setLoading(false);
   }
 
   // Method to reset to first step
