@@ -22,7 +22,6 @@ const ESCAPE_KEYS = ['46', 'Delete', 'Backspace'];
 const apiLimit = 50;
 let nextCursor = "";
 let jpegArray = [];
-let showLoadMore = false;
 
 export default function WrappedHome() {
     return (
@@ -86,7 +85,7 @@ function Home() {
 
           setWorking(false);
   
-          setNftImages(nftArrayWithoutFlwrs, true, showLoadMore);
+          setNftImages(nftArrayWithoutFlwrs, true);
           // Initiating fabric canvas
           if (!canvas) {
             canvas = new fabric.Canvas("c");
@@ -103,16 +102,9 @@ function Home() {
 
   const convertImage = (w, h) => `
   <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-      <linearGradient id="g">
-      <stop stop-color="#333" offset="0%" />
-      <stop stop-color="#404040" offset="50%" />
-      <stop stop-color="#333" offset="100%" />
-      </linearGradient>
-    </defs>
-    <rect width="${w}" height="${h}" fill="#333" rx="20" />
-    <rect id="r" width="${w}" height="${h}" fill="url(#g)" rx="20"/>
-    <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+    <rect width="${w}" height="${h}" rx="20">
+      <animate attributeName="fill" values="#2C2C2C;#3D3D3D;#2C2C2C" dur="1s" repeatCount="indefinite" />
+    </rect>
   </svg>`;
 
 
@@ -123,7 +115,8 @@ function Home() {
 
   // Method to set URLs for nfts in selection view
   function setNftImages(nftArray, bgImage) {
-    let nftRendersMap = nftArray.map((nft, i) =>
+    let nftRendersMap = [];
+    nftRendersMap = nftArray.map((nft, i) =>
       <div className="flex">
         <Image
           src={nft.image_url}
@@ -131,7 +124,7 @@ function Home() {
           key={i}
           width={150}
           height={150}
-          className="cursor-pointer rounded-lg"
+          className="cursor-pointer rounded-lg nft"
           onClick={() => loadFile(nft.image_url, bgImage)}
           blurDataURL={`data:image/svg+xml;base64,${toBase64(
             convertImage(150, 150)
@@ -192,7 +185,7 @@ function Home() {
   function refreshNfts() {
     console.log('refreshing nfts');
     setBgImage(false);
-    setJpegRenders(null);
+    setJpegRenders([]);
     let santaHat = [
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat2.png'}, 
       {image_url: 'https://res.cloudinary.com/ds24tivvl/image/upload/v1640094508/Santa-hat/santahat3.png'}, 
@@ -211,7 +204,7 @@ function Home() {
     setBgImage(true);
     setBgImageSelected(false);
     setJpegRenders(null);
-    setNftImages(jpegWithoutFlwrs, true, showLoadMore);
+    setNftImages(jpegWithoutFlwrs, true);
     canvas.setDimensions({width: screenWidth, height: 500});
     canvas.clear();
   }
@@ -467,7 +460,7 @@ function Home() {
               </div>
               <div id="svg-tag" crossOrigin="anonymous"></div>
             </div>
-            <div className="felx flex-col items-center sm:ml-8 mt-24 sm:mt-0 w-full h-full justify-center">
+            <div className="felx flex-col items-center sm:ml-8 mt-24 sm:mt-0 w-full h-full justify-center nft-container">
               {jpegRenders && jpegRenders.length > 0 ?
                 <div className="grid grid-cols-4 gap-4 nfts"> 
                   {jpegRenders}
@@ -480,6 +473,7 @@ function Home() {
                   <a href="https://opensea.io/collection/flowersonchain" target="_blank" className="ghost-button mt-8">get from opensea</a>
                 </div>
               }
+              <div className="bottom-fade"></div>
             </div>
           </div>
         }
