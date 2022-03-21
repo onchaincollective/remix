@@ -117,15 +117,14 @@ function Home() {
   function setNftImages(nftArray, bgImage) {
     let nftRendersMap = [];
     nftRendersMap = nftArray.map((nft, i) =>
-      <div className="flex">
+      <div className="flex" key={i}>
         <Image
-          src={nft.image_url}
+          src={nft.image_url ? nft.image_url : "https://res.cloudinary.com/ds24tivvl/image/upload/v1647866100/remix/404.png"}
           alt="NFT"
-          key={i}
           width={150}
           height={150}
           className="cursor-pointer rounded-lg nft"
-          onClick={() => loadFile(nft.image_url, bgImage)}
+          onClick={() => loadFile(nft.image_url ? nft.image_url : "https://res.cloudinary.com/ds24tivvl/image/upload/v1647866100/remix/404.png", bgImage)}
           blurDataURL={`data:image/svg+xml;base64,${toBase64(
             convertImage(150, 150)
           )}`}
@@ -203,7 +202,7 @@ function Home() {
   function goToBaseStep() {
     setBgImage(true);
     setBgImageSelected(false);
-    setJpegRenders(null);
+    setJpegRenders([]);
     setNftImages(jpegWithoutFlwrs, true);
     canvas.setDimensions({width: screenWidth, height: 500});
     canvas.clear();
