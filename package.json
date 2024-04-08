@@ -1,5 +1,5 @@
 {
-  "name": "occ-remix",
+  "name": "remix",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,42 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ensdomains/react-ens-address": "^0.0.30",
-    "@tailwindcss/aspect-ratio": "^0.2.1",
-    "@use-it/event-listener": "^0.1.6",
-    "@walletconnect/web3-provider": "^1.6.5",
-    "@web3-react/core": "^6.1.9",
-    "@web3-react/injected-connector": "^6.0.7",
-    "@web3-react/walletconnect-connector": "^6.2.4",
-    "autoprefixer": "^10.3.4",
-    "classnames": "^2.3.1",
-    "debounce": "^1.2.1",
-    "fabric": "^4.6.0",
+    "@tanstack/react-query": "^5.29.0",
+    "@use-it/event-listener": "^0.1.7",
+    "@web3modal/wagmi": "^4.1.5",
+    "fabric": "^5.3.0",
+    "fabricjs-react": "^1.2.2",
     "file-saver": "^2.0.5",
-    "next": "11.1.2",
-    "postcss": "^8.3.6",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "tailwindcss": "^2.2.15",
-    "web3": "^1.5.2"
+    "next": "14.1.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "viem": "^2.9.12",
+    "wagmi": "^2.5.19"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
-    "dotenv": "^10.0.0",
-    "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2",
-    "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.4.6",
-    "prettier": "^2.4.1"
-  },
-  "prettier": {
-    "overrides": [
-      {
-        "files": "*.sol",
-        "options": {
-          "printWidth": 1000
-        }
-      }
-    ]
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0"
   }
 }

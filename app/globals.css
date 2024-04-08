@@ -44,7 +44,9 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+html {
+  height: 100%;
+}
 * {
   @apply crimson;
 }
@@ -63,6 +65,14 @@ p {
 body {
   background-color: #000000;
   color: #EEF5F2;
+  height: 100%;
+}
+.occ-home {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 .font-snell {
   @apply snell;
@@ -127,6 +137,7 @@ body {
 }
 .nft {
   transition: 150ms all ease-in-out;
+  object-fit: cover;
 }
 .nft:hover {
   transform: scale(0.95);
