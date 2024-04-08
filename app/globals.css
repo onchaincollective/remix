@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;1,300;1,400&display=swap');
+@font-face {
+  font-family: "snell";
+  src: url(/flowers/SnellBTRegular.otf);
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center px-6 py-2 font-semibold rounded appearance-none focus:outline-none focus:ring;
+  }
+
+  .btn:hover {
+    box-shadow: inset 0 0 0 30em var(--black-05, rgba(0, 0, 0, 0.05));
+  }
+
+  .btn:active {
+    box-shadow: inset 0 0 0 30em var(--black-20, rgba(0, 0, 0, 0.2));
+  }
+
+  .input[disabled], .btn[disabled] {
+    @apply cursor-not-allowed opacity-70;
+  }
+
+}
+
+@layer utilities {
+  .crimson-pro {
+    font-family: "Crimson Text";
+  }
+  .crimson {
+    font-family: "Crimson Text";
+  }
+  .roboto {
+    font-family: "Roboto";
+  }
+  .snell {
+    font-family: "snell";
+  }
+}
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  height: 100%;
+}
+* {
+  @apply crimson;
+}
+
+h1, h2, h3 {
+  @apply crimson;
+}
+
+p {
+  @apply crimson-pro;
+  font-weight: 200;
+}
+
+
+/* Flowers page */
+body {
+  background-color: #000000;
+  color: #EEF5F2;
+  height: 100%;
+}
+.occ-home {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.font-snell {
+  @apply snell;
+}
+@media screen and (max-width: 480px) {
+  .flower {
+    display: flex;
+    width: 300px;
+    height: 300px;
+    border-radius: 20px;
+  }
+}
+.flower-tease svg{
+  width: 100%;
+}
+.ghost-button {
+  border-radius: 100px;
+  transition: all 200ms ease-in-out;
+  border: 2px solid #ffffff;
+  background-color: #000000;
+  color: #ffffff;
+  width: 180px;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px 0;
+}
+.ghost-button[disabled]:hover {
+  background-color: #000000;
+  color: #ffffff;
+  opacity: 0.5; 
+  cursor: not-allowed;
+}
+.ghost-button:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+.button {
+  border-radius: 100px;
+  transition: all 200ms ease-in-out;
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+  color: #000000;
+  width: 180px;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px 0;
+}
+.button:hover {
+  background-color: #e4e4e4;
+}
+
+.nft-container {
+  border-radius: 20px;
+  background-color: #1c1c1c;
+}
+.nfts {
+  height: 500px;
+  overflow: scroll;
+  padding: 20px;
+}
+.nft {
+  transition: 150ms all ease-in-out;
+  object-fit: cover;
+}
+.nft:hover {
+  transform: scale(0.95);
+}
+.nft:active {
+  transform: scale(0.9);
+}
+.bottom-fade {
+  background: linear-gradient(180deg, rgba(28, 28, 28, 0) 0%, #1C1C1C 100%);
+  height: 70px;
+  margin-top: -70px;
+  position: relative;
+  border-radius: 0 0 20px 20px;
+  opacity: 0.7;
+}
+.canvas {
+  border-radius: 20px;
+  background-color: #1c1c1c;
+}
+#c {
+  border-radius: 20px;
+}
+.back-button {
+  text-align: left;
+  border: none;
+  font-size: 20px;
+  padding-left: 8px;
+  width: 180px;
+}
+.back-button:hover {
+  background-color: black;
+  color: white;
+  border: none;
+}
+
+.back-button:hover .arrow-left {
+  transform: translateX(-4px) rotate(-45deg);
+}
+
+.load-button {
+  justify-content: center;
+  align-items: center;
+  background: black;
+  height: 40px;
+  border: 1px solid white;
+  border-radius: 20px;
+  display: flex;
+  font-style: italic;
+  color: white;
+  margin-top: 40px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+.load-button:hover {
+  background-color: #e4e4e4;
+  color: black;
+}
+
+.arrow-left {
+  display: inline-block;
+  transition: all 200ms ease-in-out;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  transform: rotate(-45deg);
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+}
